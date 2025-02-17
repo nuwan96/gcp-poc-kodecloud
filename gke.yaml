@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gcp-devops-gke
+  namespace: gcp-devops-prod  # Ensure this namespace exists in GKE
 spec:
   replicas: 1
   selector:
@@ -14,7 +15,7 @@ spec:
     spec:
       containers:
         - name: gcp-devops-gke
-          image: gcr.io/kodekloud-gcp-training/test-gcpdevops:latest
+          image: gcr.io/$PROJECT_ID/gcpdevops:latest
           ports:
             - containerPort: 5000
           env:

@@ -5,42 +5,18 @@ steps:
 
   # Push the container image
   - name: "gcr.io/cloud-builders/docker"
-    args: ["push", "gcr.io/$PROJECT_ID/gcpdevops"]  # "gcpdevops" is a image repo name
+    args: ["push", "gcr.io/$PROJECT_ID/gcpdevops"]
 
   # Deploy container image to GKE
-  - name: "gcr.io/cloud-builders/gke-deploy"  # this gke needed value not a our varibles
+  - name: "gcr.io/cloud-builders/gke-deploy"
     args:
       - run
-      - --filename=gke.yaml  # deployment yml file
-      - --image=gcr.io/$PROJECT_ID/gcpdevops 
-      - --location=us-central1-a # cluster region
-      - --cluster=gcp-devops-project
+      - --filename=gke.yaml
+      - --image=gcr.io/$PROJECT_ID/gcpdevops
+      - --location=us-central1-a  # Ensure this matches your actual cluster location
+      - --cluster=gcp-devops-cluster  # Update this with the correct cluster name
       - --namespace=gcp-devops-prod
 
-
-
 options:
-  logging: NONE
-
-
-
-
-
-
-
-  # Docker Push
-  # - name: 'gcr.io/cloud-builders/docker'
-  #   args: ['push', 
-  #          'us-central1-docker.pkg.dev/${PROJECT_ID}/my-docker-repo/myimage']
-
-  # # Entrypoint, timeout and environment variables
-  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  #   entrypoint: 'gcloud'
-  #   timeout: 240s
-  #   args: ['compute', 'instances', 
-  #          'create-with-container', 'my-vm-name',
-  #          '--container-image', 
-  #          'us-central1-docker.pkg.dev/${PROJECT_ID}/my-docker-repo/myimage']
-  #   env:
-  #     - 'CLOUDSDK_COMPUTE_REGION=us-central1'
-  #     - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+  logging: CLOUD_LOGGING_ONLY
+logsBucket: "gs://my-cloud-build-logs-nuwangaya"
