@@ -1,9 +1,23 @@
 steps:
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/gcpdevops', '.']
+  # Build the container image
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["build", "-t", "gcr.io/$PROJECT_ID/gcpdevops", "."]
 
-images:
-  - 'gcr.io/$PROJECT_ID/gcpdevops'
+  # Push the container image
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/$PROJECT_ID/gcpdevops"]  # "gcpdevops" is a image repo name
+
+  # Deploy container image to GKE
+  - name: "gcr.io/cloud-builders/gke-deploy"  # this gke needed value not a our varibles
+    args:
+      - run
+      - --filename=gke.yaml  # deployment yml file
+      - --image=gcr.io/$PROJECT_ID/gcpdevops 
+      - --location=us-central1-a # cluster region
+      - --cluster=gcp-devops-project
+      - --namespace=gcp-devops-prod
+
+
 
 options:
   logging: NONE
